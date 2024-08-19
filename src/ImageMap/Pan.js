@@ -1,7 +1,14 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import BoardList from '../Board/BoardList';
+import { modalAtom } from '../ModalAtom';
+import DashBoard from '../nivo/DashBoard';
+import Modal from '../pages/Modal';
+import { snoSel } from '../SnoAtom';
 import ImageMap from './Mapper';
 
 const ZoomPanComponent = () => {
+  const [isModalOpen, setIsModalOpen] = useRecoilState(modalAtom);
   const [scale, setScale] = useState(0.6);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
@@ -152,33 +159,46 @@ const ZoomPanComponent = () => {
     });
   }, [scale]);
 
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  }
+
   return (
-    <div
-      ref={containerRef}
-      onWheel={handleZoom}
-      onMouseDown={handleMouseDown}
-      style={{
-        width: '100%',
-        height: '800px',
-        overflow: 'hidden',
-        border: '1px solid black',
-        position: 'relative',
-        cursor: 'grab',
-      }}
-    >
+    <>
+      <Modal>
+        <div className='flex gap-5 w-full h-full'>
+        <DashBoard />
+        <BoardList sno={useRecoilValue(snoSel)} />
+        </div>
+      </Modal>
       <div
+        ref={containerRef}
+        onWheel={handleZoom}
+        onMouseDown={handleMouseDown}
         style={{
-          transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-          transformOrigin: 'left top', // 'left top'으로 설정하여 줌 시 원점 고정
           width: '100%',
-          height: '50%',
-          position: 'absolute',
-          transition: 'transform 0.25s ease-out', // 부드러운 줌 및 패닝 효과
+          height: '800px',
+          overflow: 'hidden',
+          border: '1px solid black',
+          position: 'relative',
+          cursor: 'grab',
         }}
       >
-        <ImageMap />
+        <div
+          style={{
+            transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+            transformOrigin: 'left top', // 'left top'으로 설정하여 줌 시 원점 고정
+            width: '100%',
+            height: '50%',
+            position: 'absolute',
+            transition: 'transform 0.25s ease-out', // 부드러운 줌 및 패닝 효과
+          }}
+        >
+          <ImageMap />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

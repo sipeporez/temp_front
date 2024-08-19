@@ -1,19 +1,21 @@
-import { React, useState, useEffect } from 'react';
+import { React, useEffect, useState } from 'react';
 
-import BarChart from './charts/Bar'
-import PieChart from './charts/Pie';
-import LineChart from './charts/Line';
+import BarChart from './charts/Bar';
 import HeatMapChart from './charts/Heat';
+import LineChart from './charts/Line';
+import PieChart from './charts/Pie';
 
-import axios from 'axios'
-import SelectStation from './SelectStation';
+import { useRecoilValue } from 'recoil';
+import { snoSel } from '../SnoAtom';
+
+import axios from 'axios';
 
 export default function DashBoard() {
 
   // fetch된 데이터 저장
   const [fetchedData, setFetchedData] = useState("");
   const [stationName, setStationName] = useState("");
-  const [station_no, setStation_no] = useState(95);
+  const sno = useRecoilValue(snoSel);
   // 첫 pie 차트에서 추출한 month 데이터 저장
   const [month, setMonth] = useState("");
   // 두번째 bar 차트에서 추출한 day 데이터 저장
@@ -28,13 +30,14 @@ export default function DashBoard() {
   const [loading, setLoading] = useState(false);
 
   // 차트 데이터 가져올 백엔드 서버 주소 및 헤더
-  const URL = 'http://localhost:8080/subway/'
+  // const URL = 'http://localhost:8080/subway/'
+  const URL = process.env.REACT_APP_API_URL;
   const header = { headers: { 'Content-Type': 'application/json' } }
 
   // URL 타입이 변경될때마다 차트를 렌더링
   useEffect(() => {
       fetchData();
-  }, [station_no, URL_type]);
+  }, [sno, URL_type]);
 
   // h2 태그 출력용 함수
   const loadH2 = () => {
@@ -62,7 +65,7 @@ export default function DashBoard() {
   const fetchData = async () => {
     const postJSON = JSON.stringify(
       {
-        "station_no": station_no,
+        "station_no": sno,
         "date": [date],
         "month": month,
         "day1":day1,
@@ -70,7 +73,7 @@ export default function DashBoard() {
       }
     );
     try {
-      await axios.post(URL + URL_type, postJSON, header)
+      await axios.post(URL + "subway/" + URL_type, postJSON, header)
         .then(resp => {
           setStationName(resp.data[0].station_name);
           setFetchedData(resp.data);
@@ -112,14 +115,8 @@ export default function DashBoard() {
     setURL_Type("all")
   }
 
-  // 셀렉트박스 클릭시 이벤트 (추후 이미지맵 클릭시 사용)
-  const handleStationNo = (e) => {
-    setStation_no(e);
-  }
-
   return (
-    <div className='flex flex-col'>
-      <SelectStation onSeleceted={handleStationNo} />
+    <div className='flex flex-col w-3/6'>
       <div>
         {loadH2()}
         {loadChart()}

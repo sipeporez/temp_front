@@ -1,10 +1,13 @@
 import React from 'react';
 import ImageMapper from 'react-img-mapper';
-import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { snoAtom } from '../SnoAtom';
+import { modalAtom } from '../ModalAtom';
 
 const ImageMap = () => {
 
-    const [sno, setSno] = useState("");
+    const [sno, setSno] = useRecoilState(snoAtom);
+    const [modal, setModal] = useRecoilState(modalAtom);
     const map = {
         name: 'station-map', areas: [
             // 1호선
@@ -124,15 +127,14 @@ const ImageMap = () => {
             { 'shape': 'rect', 'coords': [2215, 103, 2343, 156], 'alt': '414', 'active': false }
         ]
     };
-
     const handleAreaClick = (area) => {
-        alert(area.alt)
         setSno(area.alt)
+        setModal(true);
     };
 
     const handleAreaTouch = (area) => {
-        alert(area.alt)
         setSno(area.alt)
+        setModal(true);
     };
 
     return (
@@ -143,6 +145,7 @@ const ImageMap = () => {
             onClick={handleAreaClick}
             onTouchEnd={handleAreaTouch}
         />
+        
     );
 };
 
