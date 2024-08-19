@@ -16,7 +16,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-img-mapper": "^1.5.1",
+    "react-rnd": "^10.4.12",
     "react-scripts": "5.0.1",
+    "react-zoom-pan-pinch": "^3.6.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -44,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "react-zoom-pan": "^0.1.48",
     "tailwindcss": "^3.4.10"
   }
 }

@@ -1,13 +1,14 @@
 import Dashboard from './nivo/DashBoard';
-import ImageMapper from './ImageMap/Mapper';
 import SizeListener from './ImageMap/SizeListener'
+import ZoomPanComponent from './ImageMap/Pan';
 
 function App() {
   return (
     <div>
-      <Dashboard></Dashboard>
-      <ImageMapper></ImageMapper>
+      {/* <Dashboard></Dashboard> */}
       <SizeListener></SizeListener>
+      <ZoomPanComponent/>
+      
     </div>
   );
 }
