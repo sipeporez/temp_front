@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import RemovePopUp from "./RemovePopUp";
 
 const url = process.env.REACT_APP_API_URL;
@@ -11,8 +10,6 @@ const UserProfile = () => {
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
     const [removeConfirm, setRemoveConfirm] = useState(false);
     const [userNickname, setUserNickname] = useState("");
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -30,7 +27,6 @@ const UserProfile = () => {
                     }
                 })
                 .then((data) => {
-                    console.log(data);
                     setNickname(data.nickname);
                 })
                 .catch(() => {
@@ -39,17 +35,6 @@ const UserProfile = () => {
         };
         fetchUserInfo();
     }, []); // 회원정보를 클릭하면 UserProfile이 마운트되고 처음 한번만 fetchUserInfo() 함수를 호출
-
-
-    //로그아웃 처리 함수
-
-    const handleLogout = () => {
-        sessionStorage.removeItem("token"); // 세션에 현재 토큰만 저장되어있기 때문에 토큰만 제거하면됨
-        alert("로그아웃 되었습니다.");
-        window.location.href = "/";  // "/"로 리디렉션하고 전체 새로고침
-        //navigate("/"); window.location.reload(); (방법2)
-    }
-
 
 
     // 닉네임 변경 함수
@@ -81,7 +66,6 @@ const UserProfile = () => {
             .then((resp) => {
                 if (resp.status === 200) {
                     alert('닉네임 변경이 완료되었습니다.');
-                    navigate('/mypage')
                 } else {
                     alert('닉네임 변경이 실패했습니다. 다시 시도해 주세요.')
                     return;
@@ -100,6 +84,9 @@ const UserProfile = () => {
 
         if (newPassword.length > 16) {
             alert('비밀번호 16자 이내로 입력하세요.')
+            return;
+        } else if (newPassword.length < 6) {
+            alert('비밀번호를 6자 이상 입력하세요.')
             return;
         }
 
@@ -157,68 +144,73 @@ const UserProfile = () => {
         })
             .then((resp) => { // 서버 요청 성공 후 응답
                 if (resp.status === 200) { // 서버 요청 성공 후 응답이 되면,
-                    alert('회원탈퇴가 완료되었습니다.');
-                    sessionStorage.removeItem("token"); // 현재 토큰 제거
-                    navigate('/');
-                } else {
-                    alert('회원탈퇴에 실패했습니다.');
-                }
-            });
+                    window.location.href = "/";
+                } 
+            })
+            .finally(() => {
+                sessionStorage.removeItem("token"); // 현재 토큰 제거
+            })
     };
 
 
     return (
-        <div>
-            <h2 className="text-center text-5xl font-bold text-green-700 my-10">회원정보</h2>
-            <div className="form">
-                <label>닉네임</label>
-                <input class="text-center"
-                    type="text"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="새로운 닉네임 입력" />
-                <button className="bg-indigo-600 text-white text-sm py-1 px-3 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 mr-1"
-                    type="button" onClick={handleRandomNickname}>랜덤 닉네임</button>
-                <button className="bg-green-500 text-white text-sm py-1 px-3 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 ml-1"
-                    onClick={handleNicknameChange}>변경</button>
+        <div className="w-full h-auto flex items-center justify-center bg-white overflow-hidden">
+            <div className="bg-white rounded w-full max-w-xl p-4">
+                <form className="w-full" action="#">
+                    <div className="mb-4 flex justify-between items-center gap-4">
+                        <label className="text-xl font-semibold leading-6 text-slate-700">닉네임</label>
+                        <div className="flex gap-4">
+                            <button className="bg-slate-700 hover:bg-slate-400 text-white font-bold py-2 px-4 rounded shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset"
+                                type="button" onClick={handleRandomNickname}>랜덤 닉네임</button>
+                            <button className="bg-slate-700 hover:bg-slate-400 text-white font-bold py-2 px-4 rounded shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset"
+                                type="button"
+                                onClick={handleNicknameChange}>변경</button>
+                        </div>
+                    </div>
+                    <input className="w-full rounded-md border-2 px-2 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset my-2"
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        placeholder="새로운 닉네임 입력" />
+                    <div>
+                        <label className="text-xl font-semibold leading-6 text-slate-700">새 비밀번호</label>
+                        <input className="w-full rounded-md border-2 px-2 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset my-2"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="새 비밀번호" />
+                        <br />
+                        <label className="text-xl font-semibold leading-6 text-slate-700">새 비밀번호 확인</label>
+                        <input className="w-full rounded-md border-2 px-2 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset my-2"
+                            type="password"
+                            value={newConfirmPassword}
+                            onChange={(e) => setNewConfirmPassword(e.target.value)}
+                            placeholder="새 비밀번호 확인" />
+                    </div>
+                    <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-5">
+                        <button
+                            className="bg-red-600 hover:bg-red-300 text-white font-bold py-2 px-5 rounded shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset w-full"
+                            type="button"
+                            onClick={() => setRemoveConfirm(true)}
+                        >
+                            회원탈퇴
+                        </button>
+                        <button className="bg-slate-700 hover:bg-slate-400 text-white font-bold py-2 px-5 rounded shadow-sm ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset w-full"
+                            type="button"
+                            onClick={handlePasswordChange}>비밀번호 변경</button>
+                    </div>
 
+                    {removeConfirm && (
+                        <RemovePopUp
+                            onFlag={1}
+                            onConfirm={handleRemoveAccount}
+                            onCancel={() => setRemoveConfirm(false)}
+                        />
+                    )}
+                </form>
             </div>
-            <div className="form">
-                <label>새 비밀번호</label>
-                <input class="text-center"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="새 비밀번호" />
-                <br />
-                <label>새 비밀번호 확인</label>
-                <input class="text-center"
-                    type="password"
-                    value={newConfirmPassword}
-                    onChange={(e) => setNewConfirmPassword(e.target.value)}
-                    placeholder="새 비밀번호 확인" />
-                <button className="bg-green-500 text-white text-sm py-1 px-3 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 ml-1"
-                    onClick={handlePasswordChange}>변경</button>
-            </div>
-
-            <div>
-                <button className="bg-green-600 text-white text-sm py-1 px-3 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 ml-1"
-                    onClick={handleLogout}>로그아웃</button>
-            </div>
-            <button
-                className="bg-red-600 text-white text-sm py-1 px-3 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 ml-1 my-1"
-                onClick={() => setRemoveConfirm(true)}
-            >
-                회원탈퇴
-            </button>
-            {removeConfirm && (
-                <RemovePopUp
-                    onFlag={1}
-                    onConfirm={handleRemoveAccount}
-                    onCancel={() => setRemoveConfirm(false)}
-                />
-            )}
         </div>
+
     )
 }
 export default UserProfile;

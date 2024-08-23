@@ -2,8 +2,8 @@ import React from "react";
 
 const Loading = () => {
     return (
-        <div>
-                <p className="mt-4 text-lg text-green-400">처리중입니다...</p>
+        <div className="flex justify-center items-center text-center p-5">
+                <p className="text-lg text-gray-400">처리중입니다...</p>
         </div>
     )
 }

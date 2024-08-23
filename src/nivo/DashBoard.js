@@ -4,13 +4,15 @@ import BarChart from './charts/Bar';
 import HeatMapChart from './charts/Heat';
 import LineChart from './charts/Line';
 import PieChart from './charts/Pie';
+import AQI from './AQI';
 
 import { useRecoilValue } from 'recoil';
 import { snoSel } from '../SnoAtom';
 
 import axios from 'axios';
 
-export default function DashBoard() {
+
+export default function DashBoard({ setSname }) {
 
   // fetch된 데이터 저장
   const [fetchedData, setFetchedData] = useState("");
@@ -36,18 +38,19 @@ export default function DashBoard() {
 
   // URL 타입이 변경될때마다 차트를 렌더링
   useEffect(() => {
-      fetchData();
+    fetchData();
   }, [sno, URL_type]);
 
   // h2 태그 출력용 함수
   const loadH2 = () => {
     if (fetchedData) {
-      if (chartType === "pie") return <h2 className='text-4xl font-bold'>{stationName}역 월별 탑승객</h2>;
-      else if (chartType === "bar") return <h2 className='text-4xl font-bold'>{stationName}역 {month}월 탑승객</h2>;
-      else if (chartType === "line") return <h2 className='text-4xl font-bold'>{stationName}역 {month}월 {day1}일 ~ {day2}일 탑승객</h2>;
-      else if (chartType === "heatmap") return <h2 className='text-4xl font-bold'>{stationName}역 {date.slice(6).replace("-","월 ")}일 시간대별 탑승객</h2>;
+      if (chartType === "pie") return <h2 className="text-center sm:text-2xl md:text-3xl lg:text-4xl font-bold text-slate-700 my-3">{stationName}역 기간별 탑승객</h2>;
+      else if (chartType === "bar") return <h2 className="text-center sm:text-2xl md:text-3xl lg:text-4xl font-bold text-slate-700 my-3">{stationName}역<br /> {month}월 탑승객</h2>;
+      else if (chartType === "line") return <h2 className="text-center sm:text-2xl md:text-3xl lg:text-4xl font-bold text-slate-700 my-3">{stationName}역<br /> {month}월 {day1}일 ~ {day2}일 탑승객</h2>;
+      else if (chartType === "heatmap") return <h2 className="text-center sm:text-2xl md:text-3xl lg:text-4xl font-bold text-slate-700 my-3">{stationName}역<br /> {date.slice(6).replace("-", "월 ")}일 시간대별 탑승객</h2>;
     }
   }
+
   // 차트 그리기용 함수
   const loadChart = () => {
     if (loading) {
@@ -68,14 +71,15 @@ export default function DashBoard() {
         "station_no": sno,
         "date": [date],
         "month": month,
-        "day1":day1,
-        "day2":day2,
+        "day1": day1,
+        "day2": day2,
       }
     );
     try {
       await axios.post(URL + "subway/" + URL_type, postJSON, header)
         .then(resp => {
           setStationName(resp.data[0].station_name);
+          setSname(resp.data[0].station_name);
           setFetchedData(resp.data);
         })
     } catch (error) {
@@ -95,8 +99,8 @@ export default function DashBoard() {
 
   // 바 차트 클릭시 이벤트
   const handleBarClick = (e) => {
-    setDay1(e.data.date.slice(3,5))
-    setDay2(e.data.date.slice(11,13))
+    setDay1(e.data.date.slice(3, 5))
+    setDay2(e.data.date.slice(11, 13))
     setChartType("line");
     setURL_Type("week");
     // 1주일치 차트 -> 라인차트로 표시
@@ -116,10 +120,11 @@ export default function DashBoard() {
   }
 
   return (
-    <div className='flex flex-col w-3/6'>
+    <div >
       <div>
         {loadH2()}
         {loadChart()}
+        <AQI sname={stationName} />
       </div>
     </div>
   )

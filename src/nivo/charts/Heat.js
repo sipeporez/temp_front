@@ -1,7 +1,7 @@
 // 히트맵
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
-const HeatMapChart = ({ data, onClick }) => {
+const HeatMapChart = ({ data, onClick, onStyle }) => {
   let max = 0;
   let keylist = [];
   // 히트맵 범위 설정용 최댓값 찾기
@@ -12,7 +12,7 @@ const HeatMapChart = ({ data, onClick }) => {
           .filter(key => key.startsWith('hour_'))
           .map(key => item[key])
       )
-    ) + 50;
+    ) + 500;
 
     keylist = data.flatMap(item =>
       Object.keys(item)
@@ -35,7 +35,7 @@ const HeatMapChart = ({ data, onClick }) => {
     return transformed;
   }
   return (
-    <div style={{ height: '500px' }}>
+    <div style={{ height: '400px', width:"100%"  }}>
       <ResponsiveHeatMap
         theme={{
           text: { fontSize: 16 },
@@ -47,7 +47,7 @@ const HeatMapChart = ({ data, onClick }) => {
         onClick={onClick}
         colors={{
           type: 'sequential',
-          scheme: 'greens',
+          scheme: 'blues',
           divergeAt: 0.5,
           minValue: 0,
           maxValue: max

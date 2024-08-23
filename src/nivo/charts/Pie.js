@@ -17,7 +17,24 @@ const PieChart = ({ data, onClick }) => {
             }));
     };
     return (
-        <div style={{ height: '500px' }}>
+        <div style={{ height:'400px', width:"100%" } } className='mb-4'>
+            <div className='flex justify-center gap-5 text-xl font-bold'>
+                <button
+                    className='text-white bg-slate-700 hover:bg-slate-400 focus:outline-none font-medium rounded-full 
+                    text-sm px-4 py-2.5 text-center'
+                    type="button"
+                    name="riding"
+                    value="1"
+                    onClick={() => setGubun(1)}>승차</button>
+                <br />
+                <button
+                    className='text-white bg-slate-700 hover:bg-slate-400 focus:outline-none font-medium rounded-full 
+                    text-sm px-4 py-2.5 text-center'
+                    type="button"
+                    name="riding"
+                    value="0"
+                    onClick={() => setGubun(0)}>하차</button>
+            </div>
             <ResponsivePie
                 theme={{
                     text: { fontSize: 16 },
@@ -76,21 +93,7 @@ const PieChart = ({ data, onClick }) => {
                     }
                 ]}
             />
-            <div className='flex justify-center gap-5 text-xl font-bold'>
-                <button
-                    className='border-4'
-                    type="button"
-                    name="riding"
-                    value="1"
-                    onClick={() => setGubun(1)}>승차</button>
-                <br />
-                <button
-                    className='border-4'
-                    type="button"
-                    name="riding"
-                    value="0"
-                    onClick={() => setGubun(0)}>하차</button>
-            </div>
+            
         </div>
     );
 };

@@ -7,7 +7,7 @@ import { modalAtom } from '../ModalAtom';
 const ImageMap = () => {
 
     const [sno, setSno] = useRecoilState(snoAtom);
-    const [modal, setModal] = useRecoilState(modalAtom);
+    const [modalState, setModalState] = useRecoilState(modalAtom);
     const map = {
         name: 'station-map', areas: [
             // 1호선
@@ -129,23 +129,24 @@ const ImageMap = () => {
     };
     const handleAreaClick = (area) => {
         setSno(area.alt)
-        setModal(true);
+        setModalState({...modalState, isOpen:true});
     };
 
     const handleAreaTouch = (area) => {
         setSno(area.alt)
-        setModal(true);
+        setModalState({...modalState, isOpen:true});
     };
+
+    const url = process.env.REACT_APP_API_URL;
 
     return (
         <ImageMapper
-            src='http://192.168.0.126:8080/images/station.png'
+            src={`${url}images/station.png`}
             map={map}
             width={3136} // Adjust based on your image size
             onClick={handleAreaClick}
             onTouchEnd={handleAreaTouch}
         />
-        
     );
 };
 

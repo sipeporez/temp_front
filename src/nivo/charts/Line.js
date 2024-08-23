@@ -33,7 +33,7 @@ const LineChart = ({ data, onClick }) => {
   };
 
   return (
-    <div style={{ height: '500px' }}>
+    <div style={{ height: '400px', width:"100%" }}>
       <ResponsiveLine
         theme={{
           text: { fontSize: 16 },

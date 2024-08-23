@@ -28,7 +28,7 @@ const BarChart = ({ data, onClick }) => {
 
   };
   return (
-    <div style={{ height: '500px' }}>
+    <div style={{ height: '400px', width:"100%"  }}>
       <ResponsiveBar
         theme={{
           text: { fontSize: 16 },

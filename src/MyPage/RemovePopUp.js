@@ -10,8 +10,9 @@ const RemovePopUp = ({ onConfirm, onCancel, onFlag }) => {
 
     const handleRemoveConfirm = () => {
         if (inputText === '회원탈퇴') {
-            alert('회원탈퇴가 완료되었습니다.')
             onConfirm();
+            alert('회원탈퇴가 완료되었습니다.');
+            sessionStorage.removeItem('token');
         } else {
             alert('"회원탈퇴"를 정확히 입력하세요.');
         }
